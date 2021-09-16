@@ -18,6 +18,7 @@ import {
   mintOneToken,
   shortenAddress,
 } from "./candy-machine";
+import { withStyles } from "@material-ui/styles";
 
 const ConnectButton = styled(WalletDialogButton)``;
 
@@ -25,7 +26,14 @@ const CounterText = styled.span``; // add your styles here
 
 const MintContainer = styled.div``; // add your styles here
 
-const MintButton = styled(Button)`background: #6163ff; color: white`; // add your styles here
+// const MintButton = styled(Button)`background: #6163ff; color: white`; // add your styles here
+
+const MintButton = withStyles({
+  root: {
+    background: '#6163ff',
+    color: 'white'
+  }
+})(Button)
 
 export interface HomeProps {
   candyMachineId: anchor.web3.PublicKey;
@@ -82,6 +90,8 @@ const Home = (props: HomeProps) => {
             message: "Congratulations! Mint succeeded!",
             severity: "success",
           });
+
+          loadCandyMachineState()
         } else {
           setAlertState({
             open: true,
@@ -123,6 +133,29 @@ const Home = (props: HomeProps) => {
     }
   };
 
+  const loadCandyMachineState = async () => {
+    const anchorWallet = {
+      publicKey: wallet.publicKey,
+      signAllTransactions: wallet.signAllTransactions,
+      signTransaction: wallet.signTransaction,
+    } as anchor.Wallet;
+
+    const { candyMachine, goLiveDate, itemsRemaining, itemsRedeemed, itemsAvailable } =
+      await getCandyMachineState(
+        anchorWallet,
+        props.candyMachineId,
+        props.connection
+      );
+
+    setRemainingCount(itemsRemaining)
+    setRedeemedCount(itemsRedeemed)
+    setAvailableCount(itemsAvailable)
+
+    setIsSoldOut(itemsRemaining === 0);
+    setStartDate(goLiveDate);
+    setCandyMachine(candyMachine);
+  };
+
   useEffect(() => {
     (async () => {
       if (wallet?.publicKey) {
@@ -143,26 +176,7 @@ const Home = (props: HomeProps) => {
         return;
       }
 
-      const anchorWallet = {
-        publicKey: wallet.publicKey,
-        signAllTransactions: wallet.signAllTransactions,
-        signTransaction: wallet.signTransaction,
-      } as anchor.Wallet;
-
-      const { candyMachine, goLiveDate, itemsRemaining, itemsRedeemed, itemsAvailable } =
-        await getCandyMachineState(
-          anchorWallet,
-          props.candyMachineId,
-          props.connection
-        );
-
-      setRemainingCount(itemsRemaining)
-      setRedeemedCount(itemsRedeemed)
-      setAvailableCount(itemsAvailable)
-
-      setIsSoldOut(itemsRemaining === 0);
-      setStartDate(goLiveDate);
-      setCandyMachine(candyMachine);
+      loadCandyMachineState()
     })();
   }, [wallet, props.candyMachineId, props.connection]);
 
@@ -194,7 +208,7 @@ const Home = (props: HomeProps) => {
 
       {wallet.connected &&
         <Box marginBottom={2}>
-          <Typography variant="body1" style={{ color: '#9ca9b3' }}>Remained {remainingCount} of {availableCount} NFTs </Typography>
+          <Typography variant="body1" style={{ color: '#9ca9b3' }}>Remained {remainingCount} of {availableCount} NFTs</Typography>
         </Box>
     }
 
