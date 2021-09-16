@@ -192,9 +192,11 @@ const Home = (props: HomeProps) => {
 
       {!wallet.connected && <ConnectButton>Connect Wallet</ConnectButton> }
 
-      <Box marginBottom={2}>
-        <Typography variant="body1" style={{ color: '#9ca9b3' }}>Remained {remainingCount} of {availableCount} NFTs </Typography>
-      </Box>
+      {wallet.connected &&
+        <Box marginBottom={2}>
+          <Typography variant="body1" style={{ color: '#9ca9b3' }}>Remained {remainingCount} of {availableCount} NFTs </Typography>
+        </Box>
+    }
 
       <MintContainer>
         {wallet.connected && 
