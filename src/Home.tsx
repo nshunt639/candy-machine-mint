@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Countdown from "react-countdown";
-import { Button, CircularProgress, Snackbar } from "@material-ui/core";
+import { Box, Button, CircularProgress, Snackbar, Typography } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import penguin from './media/penguin.png'
+import eye from './media/eye.png'
 import * as anchor from "@project-serum/anchor";
 
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
@@ -42,6 +42,10 @@ const Home = (props: HomeProps) => {
   const [isSoldOut, setIsSoldOut] = useState(false); // true when items remaining is zero
   const [isMinting, setIsMinting] = useState(false); // true when user got to press MINT
 
+  const [remainingCount, setRemainingCount] = useState(0)
+  const [redeemdedCount, setRedeemedCount] = useState(0)
+  const [availableCount, setAvailableCount] = useState(0)
+  
   const [alertState, setAlertState] = useState<AlertState>({
     open: false,
     message: "",
@@ -145,12 +149,16 @@ const Home = (props: HomeProps) => {
         signTransaction: wallet.signTransaction,
       } as anchor.Wallet;
 
-      const { candyMachine, goLiveDate, itemsRemaining } =
+      const { candyMachine, goLiveDate, itemsRemaining, itemsRedeemed, itemsAvailable } =
         await getCandyMachineState(
           anchorWallet,
           props.candyMachineId,
           props.connection
         );
+
+      setRemainingCount(itemsRemaining)
+      setRedeemedCount(itemsRedeemed)
+      setAvailableCount(itemsAvailable)
 
       setIsSoldOut(itemsRemaining === 0);
       setStartDate(goLiveDate);
@@ -176,13 +184,17 @@ const Home = (props: HomeProps) => {
       } */}
       
       <div style={{display: 'flex', flexDirection: 'row', marginBottom: '5px'}}>
-        <h1 style={{color: 'white', fontSize: '42px', marginBottom: '5px', marginTop: '5px'}}>Sol</h1>
-        <h1 style={{color: '#5658dd', fontSize: '42px', marginBottom: '5px',  marginTop: '5px'}}>Penguins</h1>
+        <h1 style={{color: 'white', fontSize: '42px', marginBottom: '5px', marginTop: '5px'}}>Eye</h1>
+        <h1 style={{color: '#5658dd', fontSize: '42px', marginBottom: '5px',  marginTop: '5px'}}>Lana</h1>
       </div>
 
-      <h3 style={{color: '#9ca9b3', marginBottom: '20px'}}>8,888 SolPenguins sliding around on the Solana blockchain.</h3>
+      <h3 style={{color: '#9ca9b3', marginBottom: '20px'}}>100 eyelanas on the Solana blockchain.</h3>
 
       {!wallet.connected && <ConnectButton>Connect Wallet</ConnectButton> }
+
+      <Box marginBottom={2}>
+        <Typography variant="body1" style={{ color: '#9ca9b3' }}>Remained {remainingCount} of {availableCount} NFTs </Typography>
+      </Box>
 
       <MintContainer>
         {wallet.connected && 
@@ -211,7 +223,11 @@ const Home = (props: HomeProps) => {
         }
       </MintContainer>
 
-      <img src={penguin} style={{width: '550px', marginTop: '20px'}}/>
+      <img src={eye} style={{ width: '300px', marginTop: '20px' }} alt="Eye" />
+      
+      <Box textAlign="center" marginTop={3}>
+        <Typography variant="caption" style={{ color: '#9ca9b3' }}>Powered by <strong>Tony Yu</strong></Typography>
+      </Box>
 
       <Snackbar
         open={alertState.open}

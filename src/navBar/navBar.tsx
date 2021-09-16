@@ -1,5 +1,5 @@
 import React from 'react';
-import penguin from '../media/penguin.png'
+import eye from '../media/eye.png'
 import { Button, CircularProgress, Snackbar } from "@material-ui/core";
 
 const navBar = () => {
@@ -23,7 +23,7 @@ const navBar = () => {
       <div style={{...frowBetween, width: '70%'}}>
         <div>
           <a href=''>
-            <img src={penguin} style={{width: '30px'}}/>
+            <img src={eye} style={{width: '30px'}}/>
           </a>  
         </div>
         <div style={{...frowBetween, width: '25%'}}>
