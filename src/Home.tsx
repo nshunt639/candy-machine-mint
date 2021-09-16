@@ -29,10 +29,10 @@ const MintContainer = styled.div``; // add your styles here
 // const MintButton = styled(Button)`background: #6163ff; color: white`; // add your styles here
 
 const MintButton = withStyles({
-  root: {
-    background: '#6163ff',
-    color: 'white'
-  }
+  // root: {
+  //   background: '#6163ff',
+  //   color: 'white'
+  // }
 })(Button)
 
 export interface HomeProps {
@@ -215,9 +215,10 @@ const Home = (props: HomeProps) => {
       <MintContainer>
         {wallet.connected && 
         <MintButton
-        disabled={isSoldOut || isMinting || !isActive}
-        onClick={onMint}
-        variant="contained"
+          color="primary"
+          disabled={isSoldOut || isMinting || !isActive}
+          onClick={onMint}
+          variant="contained"
         >
           {isSoldOut ? (
             "SOLD OUT"
